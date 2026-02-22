@@ -1,0 +1,266 @@
+# Deployment Guide for Arun Sankar Portfolio
+
+## Quick Deployment Options
+
+### 🚀 Option 1: Vercel (Recommended - Fastest)
+
+**Why Vercel?**
+- Automatic deployments from GitHub
+- Free tier includes unlimited sites
+- Best performance for React apps
+- 1-click rollbacks
+- Environment variables support
+
+**Steps:**
+1. Push code to GitHub
+2. Go to [vercel.com](https://vercel.com)
+3. Click "New Project"
+4. Select your GitHub repository
+5. Click "Import"
+6. Vercel auto-detects Vite settings
+7. Click "Deploy"
+8. Done! Your site is live at `https://yourusername.vercel.app`
+
+**Custom Domain:**
+- Go to Project Settings > Domains
+- Add your domain (e.g., `arunportfolio.com`)
+- Follow DNS configuration
+
+**Environment Variables:**
+- Go to Settings > Environment Variables
+- Add `VITE_EMAILJS_*` variables if using EmailJS
+
+---
+
+### 🌐 Option 2: Netlify
+
+**Steps:**
+1. Go to [netlify.com](https://netlify.com)
+2. Click "New site from Git"
+3. Connect GitHub account
+4. Select repository
+5. Build command: `npm run build`
+6. Publish directory: `dist`
+7. Click "Deploy site"
+
+**Custom Domain:**
+- Domain settings > Add domain
+
+---
+
+### 📦 Option 3: GitHub Pages
+
+**Steps:**
+1. Create repository: `arun-sankar-portfolio`
+2. Update `vite.config.ts`:
+   ```typescript
+   export default defineConfig({
+     base: '/',  // or '/arun-sankar-portfolio/' if using project site
+     ...
+   })
+   ```
+3. Build: `npm run build`
+4. Enable GitHub Pages in repo Settings
+5. Select `Deploy from a branch`
+6. Select `main` branch and `/root` folder
+
+**Note:** Push `dist` folder or enable GitHub Actions
+
+---
+
+### ⚡ Option 4: AWS Amplify
+
+**Steps:**
+1. Go to [AWS Amplify Console](https://console.aws.amazon.com/amplify)
+2. Click "New app > Host web app"
+3. Select GitHub
+4. Authorize GitHub account
+5. Select repository and branch
+6. Build settings auto-detect for Vite
+7. Click "Save and deploy"
+
+**Cost:** Free tier includes 15GB bandwidth/month
+
+---
+
+### 🏠 Option 5: Self-Hosted (VPS)
+
+**Requirements:**
+- VPS or dedicated server
+- Node.js installed
+- Nginx or Apache
+
+**Steps:**
+
+1. **SSH into server:**
+   ```bash
+   ssh user@your-server.com
+   ```
+
+2. **Install Node.js:**
+   ```bash
+   curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+   sudo apt-get install -y nodejs
+   ```
+
+3. **Clone and setup:**
+   ```bash
+   git clone https://github.com/yourusername/arun-sankar-portfolio.git
+   cd arun-sankar-portfolio
+   npm install
+   npm run build
+   ```
+
+4. **Setup Nginx:**
+   ```bash
+   sudo apt-get install nginx
+   ```
+
+5. **Configure Nginx:**
+   ```bash
+   sudo nano /etc/nginx/sites-available/default
+   ```
+   
+   Add:
+   ```nginx
+   server {
+     listen 80 default_server;
+     server_name your-domain.com;
+     
+     root /home/user/arun-sankar-portfolio/dist;
+     index index.html;
+     
+     location / {
+       try_files $uri /index.html;
+     }
+     
+     location ~* \.(js|css|png|jpg|jpeg|gif|ico|woff|woff2)$ {
+       expires 1y;
+       add_header Cache-Control "public, immutable";
+     }
+   }
+   ```
+
+6. **SSL Certificate (Let's Encrypt):**
+   ```bash
+   sudo apt-get install certbot python3-certbot-nginx
+   sudo certbot --nginx -d your-domain.com
+   ```
+
+7. **Restart Nginx:**
+   ```bash
+   sudo systemctl restart nginx
+   ```
+
+8. **Auto-deploy with webhooks:**
+   - Create GitHub webhook pointing to: `https://your-server.com/deploy`
+   - Use a service like Webhook.cool or write a webhook handler
+
+---
+
+## Performance Checklist
+
+- [ ] Images optimized (< 100KB each)
+- [ ] Build size checked: `npm run build` < 500KB gzipped
+- [ ] Lighthouse score > 90
+- [ ] Mobile responsiveness tested
+- [ ] Links to GitHub/LinkedIn correct
+- [ ] Email works correctly
+- [ ] Resume PDF present
+- [ ] SEO meta tags updated
+- [ ] Custom domain configured
+
+## Post-Deployment
+
+1. **Monitor Performance:**
+   - Vercel Analytics
+   - Netlify Analytics
+   - Google Analytics
+
+2. **Setup Monitoring:**
+   - Enable error tracking
+   - Set up alerts
+
+3. **Update Content:**
+   - Keep projects updated
+   - Update skills regularly
+   - Refresh resume
+
+4. **Maintain:**
+   - Update dependencies: `npm update`
+   - Rebuild: `npm run build`
+   - Test regularly
+
+## Troubleshooting
+
+### 404 Errors on Refresh
+**Cause:** SPA routing not configured
+**Fix:** Ensure server redirects to `index.html` (Vercel auto-does this)
+
+### Images Not Loading
+**Check:**
+- Image paths use `/image.jpg` format
+- Images in `public/` folder
+- CORS enabled if using external CDN
+
+### Build Failures
+```bash
+rm -rf node_modules package-lock.json
+npm install
+npm run build
+```
+
+### Slow Performance
+- Optimize images further
+- Use WebP format
+- Enable caching headers
+- Consider CDN (Cloudflare Free)
+
+## Domain Setup
+
+### Update DNS Records
+
+**For Vercel:**
+```
+CNAME   www   cname.vercel-dns.com
+A       @     76.76.19.20
+```
+
+**For Netlify:**
+```
+CNAME   www   random.netlify.com
+A       @     75.2.60.5
+```
+
+### SSL Certificate
+- Automatically generated by all platforms
+- Free let's encrypt via certbot (self-hosted)
+
+## Monitoring & Analytics
+
+### Add Google Analytics
+```html
+<!-- In index.html -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=GA_ID"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'GA_ID');
+</script>
+```
+
+### Add Hotjar for User Insights
+```html
+<script>
+    (function(h,o,t,j,a,r){
+        h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
+        h._hjSettings={hjid:HOTJAR_ID,hjsv:6};
+        // ... load script
+    })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
+</script>
+```
+
+---
+
+**Recommended:** Use Vercel for simplicity and performance. It's free, fast, and production-ready! 🚀
