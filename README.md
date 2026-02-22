@@ -69,7 +69,8 @@ This portfolio highlights my backend expertise in Spring Boot and frontend skill
 ---
 
 ##  Screenshots
-![Uploading image.png…]()
+<img width="821" height="437" alt="image" src="https://github.com/user-attachments/assets/dc6a44fb-6802-42f4-bb18-065deaa037bd" />
+
 
 
 ---
